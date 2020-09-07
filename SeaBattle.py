@@ -1,4 +1,4 @@
-#Морской Бой v0.9.1
+#Морской Бой v0.9.2
 import os
 import random
 from termcolor import colored
@@ -22,7 +22,7 @@ def PrintField ():
     print(colored("              ,:',:`,:',:'          ",'white','on_blue',attrs=['bold'])+colored(" /  ___|             | ___ \       | |  | |  | |                                                 ",'red','on_blue',attrs=['bold']))
     print(colored("           __||_||_||_||__          ",'red','on_blue')+colored(" \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___                                            ",'red','on_blue',attrs=['bold']))
     print(colored("      ____[\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"]____     ",'red','on_blue',attrs=['bold'])+colored("  `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\                                           ",'red','on_blue',attrs=['bold']))
-    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  indev v0.9.1                            ",'green','on_blue',attrs=['bold']))
+    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  indev v0.9.2                            ",'green','on_blue',attrs=['bold']))
     print(colored("    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^  ",'blue','on_blue',attrs=['bold'])+colored(" \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___| ",'red','on_blue',attrs=['bold'])+colored("  it just works!                          ",'green','on_blue',attrs=['bold']))
     print("-------------------------------------------------------------------------------------------------------------------------------------")
     print()
@@ -403,29 +403,31 @@ def PlayerTurnDamaged (Px,Py):
                 print("Неизвестная команда.")
                 PlayerTurnDamaged(Px,Py+1)
 def PlayerTurn ():
-    global PlayerCount, EnemyCount
+    global PlayerCount, EnemyCount, ij
     #Px = int(input("Введите первую координату: "))
     #Py = int(input("Введите вторую координату: "))
+    ij+=1;    
+    if ij==21:
+        ij=1;
     while True:
-        for ij in range (1,20): 
-            if  Enemy[1][ij] == 0:
-                Py=1;
-                Px=ij;
-            elif  Enemy[ij][1] == 0: 
-                Px=ij
-                Py=1;
-            elif  Enemy[20][ij] == 0: 
-                Px=20
-                Py=ij;
-            elif  Enemy[ij][20] == 0:  
-                Px=ij
-                Py=20; 
-            else:    
-                Px = random.randint(1,20);
-                Py = random.randint(1,20);
-                if (Enemy[Py][Px] == 0):
-                    break
-        
+        #print(ij)
+        if  Enemy[1][ij] == 0:
+            Px=ij;
+            Py=1;
+        elif  Enemy[ij][1] == 0: 
+            Px=1;
+            Py=ij;
+        elif  Enemy[20][ij] == 0: 
+            Px=ij;
+            Py=20;
+        elif  Enemy[ij][20] == 0:  
+            Px=20;
+            Py=ij; 
+        else:    
+            Px = random.randint(1,20);
+            Py = random.randint(1,20);
+        if (Enemy[Py][Px] == 0):
+            break
     print("СТРЕЛЯЮ ПО ТОЧКЕ {0}{1}".format(Letters[Px],Py))
     print("П - промах, Р - ранил, У - убил")
     Action = input("Жду дальнейших указаний: ")
