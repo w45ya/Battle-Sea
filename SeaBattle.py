@@ -1,4 +1,4 @@
-#Морской Бой v0.9.7
+#Морской Бой v0.9.8
 import os
 import random
 import time
@@ -27,11 +27,11 @@ def PrintField ():
     print(colored("              ,:',:`,:',:'          ",'white','on_blue',attrs=['bold'])+colored(" /  ___|             | ___ \       | |  | |  | |                                                 ",'red','on_blue',attrs=['bold']))
     print(colored("           __||_||_||_||__          ",'red','on_blue')+colored(" \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___                                            ",'red','on_blue',attrs=['bold']))
     print(colored("      ____[\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"]____     ",'red','on_blue',attrs=['bold'])+colored("  `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\                                           ",'red','on_blue',attrs=['bold']))
-    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  indev v0.9.7                            ",'green','on_blue',attrs=['bold']))
+    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  indev v0.9.8                            ",'green','on_blue',attrs=['bold']))
     print(colored("    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^  ",'blue','on_blue',attrs=['bold'])+colored(" \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___| ",'red','on_blue',attrs=['bold'])+colored("  it just works!                          ",'green','on_blue',attrs=['bold']))
     print("-------------------------------------------------------------------------------------------------------------------------------------")
     print()
-    print("--|-----------------------------",PlayerCount,"---------------------------  ||  --|-----------------------------",EnemyCount,"-----------------------------")
+    print("--|-----------------------------","{:02d}".format(PlayerCount),"---------------------------  ||  --|-----------------------------","{:02d}".format(EnemyCount),"-----------------------------")
     print("--|------------------------------------------------------------  ||  --|-------------------------------------------------------------")
     print("  |  А  Б  В  Г  Д  Е  Ж  З  И  К  Л  М  Н  О  П  Р  С  Т  У  Ф  ||    |  А  Б  В  Г  Д  Е  Ж  З  И  К  Л  М  Н  О  П  Р  С  Т  У  Ф ")
     #print("  | 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20  ||    | 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20")
@@ -66,6 +66,9 @@ def PrintField ():
         
 def EnemyTurn ():
     global PlayerCount, EnemyCount
+    if PlayerCount <= 0:
+        print("YOU STINK LOSER")
+        exit()
     print("Ход противника.")
     Et = input("Введите координаты: ")
     try:
@@ -110,7 +113,7 @@ def EnemyTurn ():
                         print("РАНИЛ")
                     else:
                         print("УБИЛ")
-                elif Player[Ey][Ex+1]==3:
+                elif Player[Ey][Ex-1]==3:
                     i=2
                     while Player[Ey][Ex-i]==3:
                         i+=1
@@ -130,6 +133,9 @@ def EnemyTurn ():
 def PlayerTurnDamaged (Px,Py):
     PrintField()
     global PDx, PDy, Side, i, PlayerCount, EnemyCount, Sides
+    if EnemyCount <= 0:
+        print("ПОБЕДА")
+        exit()
     if PDx==0: PDx=Px
     if PDy==0: PDy=Py
     if Side==0: 
@@ -445,15 +451,19 @@ def PlayerTurnDamaged (Px,Py):
                 PrintField()
                 print("Неизвестная команда.")
                 PlayerTurnDamaged(Px,Py+1)
+
 def PlayerTurn ():
     global PlayerCount, EnemyCount
+    if EnemyCount <= 0:
+        print("ПОБЕДА")
+        exit()
     #Px = int(input("Введите первую координату: "))
     #Py = int(input("Введите вторую координату: "))
     Tactic = 1
     if Tactic == 1:
         while True:
             TacticC = random.randint(1,8)
-            if TacticC == 1 or TacticC == 6 or TacticC == 7 or TacticC == 7:
+            if TacticC == 1 or TacticC == 6 or TacticC == 7 or TacticC == 8:
                 Px = random.randint(2,19)
                 Py = random.randint(2,19)
             elif TacticC == 2:
@@ -471,8 +481,11 @@ def PlayerTurn ():
             if (Enemy[Py][Px] == 0):
                 break
     elif Tactic == 2:
-        Px = random.randint(2,19)
-        Py = random.randint(2,19)
+        while True:
+            Px = random.randint(2,19)
+            Py = random.randint(2,19)
+            if (Enemy[Py][Px] == 0):
+                break
     elif Tactic == 3:
         while True:
             TacticC = random.randint(1,5)
@@ -521,17 +534,20 @@ def PlayerTurn ():
         EnemyCount-=1
         PrintField()
         PlayerTurn()
-    elif Action == "T1":
+    elif Action == "Т1":
         Tactic = 1
         PrintField()
+        print("Выбрана тактика №1")
         PlayerTurn()
-    elif Action == "T2":
+    elif Action == "Т2":
         Tactic = 2
         PrintField()
+        print("Выбрана тактика №2")
         PlayerTurn()
-    elif Action == "T3":
+    elif Action == "Т3":
         Tactic = 3
         PrintField()
+        print("Выбрана тактика №3")
         PlayerTurn()
     elif Action == "F":
         for i in range (1,21): 
@@ -599,7 +615,7 @@ def PlayerTurn ():
         PrintField()
         print("Неизвестная команда.")
         PlayerTurn()
-
+        
 Player = Enemy
 PrintField()
 
@@ -644,4 +660,4 @@ while PlayerCount > 0 and EnemyCount > 0:
 
 #Дописать: карты
 #Тестировать и править баги 
-#Если будет время: Тактики, выбор тактики, мелкие фичи just for lulz
+#Если будет время: Тактики, мелкие фичи just for lulz
