@@ -1,4 +1,4 @@
-#Морской Бой v1.0.6
+#Морской Бой v1.1.0
 import os
 import random
 import time
@@ -19,6 +19,9 @@ PlayerCount = 76
 EnemyCount = 76
 Letters = "ЁАБВГДЕЖЗИКЛМНОПРСТУФЙ"
 Sides=[0,0,0,0,0]
+SaveX = 0
+SaveY = 0
+SaveS = 0
 
 def PrintField (): 
     os.system('clear')
@@ -27,7 +30,7 @@ def PrintField ():
     print(colored("              ,:',:`,:',:'          ",'white','on_blue',attrs=['bold'])+colored(" /  ___|             | ___ \       | |  | |  | |                                                 ",'red','on_blue',attrs=['bold']))
     print(colored("           __||_||_||_||__          ",'red','on_blue')+colored(" \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___                                            ",'red','on_blue',attrs=['bold']))
     print(colored("      ____[\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"]____     ",'red','on_blue',attrs=['bold'])+colored("  `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\                                           ",'red','on_blue',attrs=['bold']))
-    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.0.6                                  ",'green','on_blue',attrs=['bold']))
+    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.1.0                                  ",'green','on_blue',attrs=['bold']))
     print(colored("    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^  ",'blue','on_blue',attrs=['bold'])+colored(" \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___| ",'red','on_blue',attrs=['bold'])+colored("  it just works!                          ",'green','on_blue',attrs=['bold']))
     print("-------------------------------------------------------------------------------------------------------------------------------------")
     print()
@@ -64,73 +67,91 @@ def PrintField ():
         print ()
         
 def EnemyTurn ():
-    global PlayerCount, EnemyCount
+    global PlayerCount, EnemyCount, SaveX, SaveY, SaveS
     if PlayerCount <= 0:
         print("YOU STINK LOSER")
         exit()
     print("Ход противника.")
     Et = input("Введите координаты: ")
-    try:
-        for i in range(len(Letters)): 
-            if (Et[0]==Letters[i]): Ex = i
-    
-        if len(Et) == 2:
-            Ey = int(Et[1])
-        else:
-            Ey = int(Et[1])*10+int(Et[2])
-        if Player[Ey][Ex]==2:
-            Player[Ey][Ex]=3
-            PrintField()
-            if Player[Ey+1][Ex]==2 or Player[Ey-1][Ex]==2 or Player[Ey][Ex+1]==2 or Player[Ey][Ex-1]==2:
-                print("РАНИЛ")
-            else:
-                if Player[Ey+1][Ex]==3:
-                    i=2
-                    while Player[Ey+i][Ex]==3:
-                        i+=1
-                    if Player[Ey+i][Ex]==2:
-                        print("РАНИЛ")
-                    else:
-                        print("УБИЛ")
-                elif Player[Ey-1][Ex]==3:
-                    i=2
-                    while Player[Ey-i][Ex]==3:
-                        i+=1
-                    if Player[Ey-i][Ex]==2:
-                        print("РАНИЛ")
-                    else:
-                        print("УБИЛ")
-                elif Player[Ey][Ex+1]==3:
-                    i=2
-                    while Player[Ey][Ex+i]==3:
-                        i+=1
-                    if Player[Ey][Ex+i]==2:
-                        print("РАНИЛ")
-                    else:
-                        print("УБИЛ")
-                elif Player[Ey][Ex-1]==3:
-                    i=2
-                    while Player[Ey][Ex-i]==3:
-                        i+=1
-                    if Player[Ey][Ex-i]==2:
-                        print("РАНИЛ")
-                    else:
-                        print("УБИЛ")
-                else:
-                    print("УБИЛ")
-            PlayerCount-=1
-            if PlayerCount > 0: EnemyTurn()
-        else:
-            Player[int(Ey)][int(Ex)]=1
-            PrintField()
-            print("МИМО")
-    except:
-        print("Неверная координата")
+    if Et == "LOAD":
+        if SaveS == 0:
+            Player[SaveY][SaveX] = 0
+        if SaveS == 1:
+            Player[SaveY][SaveX] = 1
+        if SaveS == 2:
+            Player[SaveY][SaveX] = 2
+        if SaveS == 3:
+            Player[SaveY][SaveX] = 3
+        PrintField()
         EnemyTurn()
+    else:
+        try:
+            for i in range(len(Letters)): 
+                if (Et[0]==Letters[i]): Ex = i
+        
+            if len(Et) == 2:
+                Ey = int(Et[1])
+            else:
+                Ey = int(Et[1])*10+int(Et[2])
+            if Player[Ey][Ex]==2:
+                SaveX = Ex
+                SaveY = Ey
+                SaveS = Player[Ey][Ex]
+                Player[Ey][Ex]=3
+                PrintField()
+                if Player[Ey+1][Ex]==2 or Player[Ey-1][Ex]==2 or Player[Ey][Ex+1]==2 or Player[Ey][Ex-1]==2:
+                    print("РАНИЛ")
+                else:
+                    if Player[Ey+1][Ex]==3:
+                        i=2
+                        while Player[Ey+i][Ex]==3:
+                            i+=1
+                        if Player[Ey+i][Ex]==2:
+                            print("РАНИЛ")
+                        else:
+                            print("УБИЛ")
+                    elif Player[Ey-1][Ex]==3:
+                        i=2
+                        while Player[Ey-i][Ex]==3:
+                            i+=1
+                        if Player[Ey-i][Ex]==2:
+                            print("РАНИЛ")
+                        else:
+                            print("УБИЛ")
+                    elif Player[Ey][Ex+1]==3:
+                        i=2
+                        while Player[Ey][Ex+i]==3:
+                            i+=1
+                        if Player[Ey][Ex+i]==2:
+                            print("РАНИЛ")
+                        else:
+                            print("УБИЛ")
+                    elif Player[Ey][Ex-1]==3:
+                        i=2
+                        while Player[Ey][Ex-i]==3:
+                            i+=1
+                        if Player[Ey][Ex-i]==2:
+                            print("РАНИЛ")
+                        else:
+                            print("УБИЛ")
+                    else:
+                        print("УБИЛ")
+                PlayerCount-=1
+                if PlayerCount > 0: EnemyTurn()
+            else:
+                SaveX = Ex
+                SaveY = Ey
+                SaveS = Player[Ey][Ex]
+                Player[int(Ey)][int(Ex)]=1
+                PrintField()
+                print("МИМО")
+        except:
+            print("Неверная координата")
+            EnemyTurn()
 
 def PlayerTurnDamaged (Px,Py):
     PrintField()
-    global PDx, PDy, Side, i, PlayerCount, EnemyCount, Sides
+    global PDx, PDy, Side, i, PlayerCount, EnemyCount, Sides, SaveX, SaveY, SaveS
     if EnemyCount <= 0:
         print("ПОБЕДА")
         exit()
@@ -220,6 +241,21 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount=0
                 print("what a mess we made...")
                 exit()
+            elif Action == "LOAD":
+                if SaveX != 0 and SaveY != 0:
+                    if SaveS == 0:
+                        Player[SaveY][SaveX] = 0
+                    if SaveS == 1:
+                        Player[SaveY][SaveX] = 1
+                    if SaveS == 2:
+                        Player[SaveY][SaveX] = 2
+                    if SaveS == 3:
+                        Player[SaveY][SaveX] = 3
+                    PrintField()
+                    EnemyTurn()
+                else:
+                    print("Сохраненных данных нет")
+                    PlayerTurn()
             else:
                 PrintField()
                 print("Неизвестная команда.")
@@ -295,6 +331,21 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount=0
                 print("what a mess we made...")
                 exit()
+            elif Action == "LOAD":
+                if SaveX != 0 and SaveY != 0:
+                    if SaveS == 0:
+                        Player[SaveY][SaveX] = 0
+                    if SaveS == 1:
+                        Player[SaveY][SaveX] = 1
+                    if SaveS == 2:
+                        Player[SaveY][SaveX] = 2
+                    if SaveS == 3:
+                        Player[SaveY][SaveX] = 3
+                    PrintField()
+                    EnemyTurn()
+                else:
+                    print("Сохраненных данных нет")
+                    PlayerTurn()
             else:
                 PrintField()
                 print("Неизвестная команда.")
@@ -370,6 +421,21 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount=0
                 print("what a mess we made...")
                 exit()
+            elif Action == "LOAD":
+                if SaveX != 0 and SaveY != 0:
+                    if SaveS == 0:
+                        Player[SaveY][SaveX] = 0
+                    if SaveS == 1:
+                        Player[SaveY][SaveX] = 1
+                    if SaveS == 2:
+                        Player[SaveY][SaveX] = 2
+                    if SaveS == 3:
+                        Player[SaveY][SaveX] = 3
+                    PrintField()
+                    EnemyTurn()
+                else:
+                    print("Сохраненных данных нет")
+                    PlayerTurn()
             else:
                 PrintField()
                 print("Неизвестная команда.")
@@ -445,13 +511,28 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount=0
                 print("what a mess we made...")
                 exit()
+            elif Action == "LOAD":
+                if SaveX != 0 and SaveY != 0:
+                    if SaveS == 0:
+                        Player[SaveY][SaveX] = 0
+                    if SaveS == 1:
+                        Player[SaveY][SaveX] = 1
+                    if SaveS == 2:
+                        Player[SaveY][SaveX] = 2
+                    if SaveS == 3:
+                        Player[SaveY][SaveX] = 3
+                    PrintField()
+                    EnemyTurn()
+                else:
+                    print("Сохраненных данных нет")
+                    PlayerTurn()
             else:
                 PrintField()
                 print("Неизвестная команда.")
                 PlayerTurnDamaged(Px,Py+1)
 
 def PlayerTurn ():
-    global PlayerCount, EnemyCount
+    global PlayerCount, EnemyCount, SaveX, SaveY, SaveS
     if EnemyCount <= 0:
         print("ПОБЕДА")
         exit()
@@ -609,6 +690,21 @@ def PlayerTurn ():
         PrintField()
         print("what a mess we made...")
         exit()
+    elif Action == "LOAD":
+        if SaveX != 0 and SaveY != 0:
+            if SaveS == 0:
+                Player[SaveY][SaveX] = 0
+            if SaveS == 1:
+                Player[SaveY][SaveX] = 1
+            if SaveS == 2:
+                Player[SaveY][SaveX] = 2
+            if SaveS == 3:
+                Player[SaveY][SaveX] = 3
+            PrintField()
+            EnemyTurn()
+        else:
+            print("Сохраненных данных нет")
+            PlayerTurn()
     else:
         PrintField()
         print("Неизвестная команда.")
