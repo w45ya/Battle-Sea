@@ -1,4 +1,4 @@
-#Морской Бой v1.0.5
+#Морской Бой v1.0.6
 import os
 import random
 import time
@@ -27,7 +27,7 @@ def PrintField ():
     print(colored("              ,:',:`,:',:'          ",'white','on_blue',attrs=['bold'])+colored(" /  ___|             | ___ \       | |  | |  | |                                                 ",'red','on_blue',attrs=['bold']))
     print(colored("           __||_||_||_||__          ",'red','on_blue')+colored(" \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___                                            ",'red','on_blue',attrs=['bold']))
     print(colored("      ____[\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"]____     ",'red','on_blue',attrs=['bold'])+colored("  `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\                                           ",'red','on_blue',attrs=['bold']))
-    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.0.5                                  ",'green','on_blue',attrs=['bold']))
+    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.0.6                                  ",'green','on_blue',attrs=['bold']))
     print(colored("    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^  ",'blue','on_blue',attrs=['bold'])+colored(" \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___| ",'red','on_blue',attrs=['bold'])+colored("  it just works!                          ",'green','on_blue',attrs=['bold']))
     print("-------------------------------------------------------------------------------------------------------------------------------------")
     print()
@@ -78,10 +78,6 @@ def EnemyTurn ():
             Ey = int(Et[1])
         else:
             Ey = int(Et[1])*10+int(Et[2])
-    except:
-        print("Неверная координата")
-        EnemyTurn()
-    else:
         if Player[Ey][Ex]==2:
             Player[Ey][Ex]=3
             PrintField()
@@ -128,6 +124,9 @@ def EnemyTurn ():
             Player[int(Ey)][int(Ex)]=1
             PrintField()
             print("МИМО")
+    except:
+        print("Неверная координата")
+        EnemyTurn()
 
 def PlayerTurnDamaged (Px,Py):
     PrintField()
