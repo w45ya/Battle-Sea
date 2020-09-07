@@ -1,4 +1,4 @@
-#Морской Бой v0.4
+#Морской Бой v0.5
 import os
 import random
 TestMap = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,2,0,0,0,0,0,0,0,2,2,2,2,2,2,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,0,1], [1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
@@ -6,6 +6,9 @@ Enemy = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], [1,0,0,0,0,0,0,0,0,0,0,0
 #0 - пустая клетка; 1 - промах, 2 - корабль, 3 - подбитый корабль
 PDx = 0
 PDy = 0
+Side = 0
+i = 0
+
 
 def PrintField (): 
     os.system('clear')
@@ -15,7 +18,7 @@ def PrintField ():
     print("                                     \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___ ")
     print("                                      `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\")
     print("                                     /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/")
-    print("                                     \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___|  indev v0.4")
+    print("                                     \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___|  indev v0.5")
     print("------------------------------------------------------------------------------------------------------------------------------------")
     print()
     print("  | 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20  ||    | 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20")
@@ -63,13 +66,240 @@ def EnemyTurn ():
         print("ПРОМАЗАЛ")
 
 def PlayerTurnDamaged (Px,Py):
-    Enemy[Py][Px] = 3
-    Enemy[Py-1][Px-1] = 1
-    Enemy[Py-1][Px+1] = 1
-    Enemy[Py+1][Px+1] = 1
-    Enemy[Py+1][Px-1] = 1
     PrintField()
-    
+    global PDx, PDy, Side, i
+    if PDx==0: PDx=Px
+    if PDy==0: PDy=Py
+    if Side==0: Side=random.randint(1,4)
+    i+=1
+    if Side==1:
+        if (Enemy[Py][Px+1]!=0 & Px+1!=21): 
+            Side = 0
+            PlayerTurnDamaged(PDx,PDy)
+        Px+=1 
+        print("СТРЕЛЯЮ ПО ТОЧКЕ {0},{1}".format(Px,Py))
+        print("m - промах, d - ранил, k - убил")
+        Action = input("Жду дальнейших указаний: ")
+        if Action == "m":
+            if i>1:
+                i=0
+                Side=3
+            else:
+                i=0
+                Side=0
+            Enemy[Py][Px]=1
+            PrintField()
+        elif Action == "k":
+            Side=0
+            Enemy[Py][Px]=3
+            Enemy[Py-1][Px-1] = 1
+            Enemy[Py-1][Px+1] = 1
+            Enemy[Py+1][Px+1] = 1
+            Enemy[Py+1][Px-1] = 1
+            Enemy[Py][Px+1] = 1
+            if Enemy[PDy][PDx-1]==0: Enemy[PDy][PDx-1]=1
+            PDx=0
+            PDy=0
+            i=0
+            PrintField()
+            PlayerTurn()
+        elif Action == "d":
+            Enemy[Py][Px] = 3
+            Enemy[Py-1][Px-1] = 1
+            Enemy[Py-1][Px+1] = 1
+            Enemy[Py+1][Px+1] = 1
+            Enemy[Py+1][Px-1] = 1
+            if Px+1==21:
+                i=0
+                Side=3
+                PlayerTurnDamaged(PDx,PDy)
+            else: PlayerTurnDamaged(Px,Py)
+        elif Action == "F":
+            for i in range (1,21): 
+                for j in range (1,21):
+                    if Player[i][j]==2:
+                        Player[i][j]=3
+            PrintField()
+            print("PAYING RESPECT")
+            exit() 
+        elif Action == "FUCK THIS FAG":
+            for i in range (1,21): 
+                for j in range (1,21):
+                    Enemy[i][j]=3
+            PrintField()
+            exit() 
+            
+    elif Side==2:
+        if (Enemy[Py+1][Px]!=0 & Py+1!=21): 
+            Side = 0
+            PlayerTurnDamaged(PDx,PDy)
+        Py+=1 
+        print("СТРЕЛЯЮ ПО ТОЧКЕ {0},{1}".format(Px,Py))
+        print("m - промах, d - ранил, k - убил")
+        Action = input("Жду дальнейших указаний: ")
+        if Action == "m":
+            if i>1:
+                i=0
+                Side=4
+            else:
+                i=0
+                Side=0
+            Enemy[Py][Px]=1
+            PrintField()
+        elif Action == "k":
+            Side=0
+            Enemy[Py][Px]=3
+            Enemy[Py-1][Px-1] = 1
+            Enemy[Py-1][Px+1] = 1
+            Enemy[Py+1][Px+1] = 1
+            Enemy[Py+1][Px-1] = 1
+            Enemy[Py+1][Px] = 1
+            if Enemy[PDy-1][PDx]==0: Enemy[PDy-1][PDx]=1
+            PDx=0
+            PDy=0
+            i=0
+            PrintField()
+            PlayerTurn()
+        elif Action == "d":
+            Enemy[Py][Px] = 3
+            Enemy[Py-1][Px-1] = 1
+            Enemy[Py-1][Px+1] = 1
+            Enemy[Py+1][Px+1] = 1
+            Enemy[Py+1][Px-1] = 1
+            if Py+1==0:
+                i=0
+                Side=4
+                PlayerTurnDamaged(PDx,PDy)
+            else: PlayerTurnDamaged(Px,Py)
+        elif Action == "F":
+            for i in range (1,21): 
+                for j in range (1,21):
+                    if Player[i][j]==2:
+                        Player[i][j]=3
+            PrintField()
+            print("PAYING RESPECT")
+            exit() 
+        elif Action == "FUCK THIS FAG":
+            for i in range (1,21): 
+                for j in range (1,21):
+                    Enemy[i][j]=3
+            PrintField()
+            exit()          
+            
+    elif Side==3:
+        if (Enemy[Py][Px-1]!=0 & Px-1!=0): 
+            Side = 0
+            PlayerTurnDamaged(PDx,PDy)
+        Px-=1 
+        print("СТРЕЛЯЮ ПО ТОЧКЕ {0},{1}".format(Px,Py))
+        print("m - промах, d - ранил, k - убил")
+        Action = input("Жду дальнейших указаний: ")
+        if Action == "m":
+            if i>1:
+                i=0
+                Side=1
+            else:
+                i=0
+                Side=0
+            Enemy[Py][Px]=1
+            PrintField()
+        elif Action == "k":
+            Side=0
+            Enemy[Py][Px]=3
+            Enemy[Py-1][Px-1] = 1
+            Enemy[Py-1][Px+1] = 1
+            Enemy[Py+1][Px+1] = 1
+            Enemy[Py+1][Px-1] = 1
+            Enemy[Py][Px-1] = 1
+            if Enemy[PDy][PDx+1]==0: Enemy[PDy][PDx+1]=1
+            PDx=0
+            PDy=0
+            i=0
+            PrintField()
+            PlayerTurn()
+        elif Action == "d":
+            Enemy[Py][Px] = 3
+            Enemy[Py-1][Px-1] = 1
+            Enemy[Py-1][Px+1] = 1
+            Enemy[Py+1][Px+1] = 1
+            Enemy[Py+1][Px-1] = 1
+            if Px-1==0:
+                i=0
+                Side=1
+                PlayerTurnDamaged(PDx,PDy)
+            else: PlayerTurnDamaged(Px,Py)
+        elif Action == "F":
+            for i in range (1,21): 
+                for j in range (1,21):
+                    if Player[i][j]==2:
+                        Player[i][j]=3
+            PrintField()
+            print("PAYING RESPECT")
+            exit() 
+        elif Action == "FUCK THIS FAG":
+            for i in range (1,21): 
+                for j in range (1,21):
+                    Enemy[i][j]=3
+            PrintField()
+            exit() 
+            
+    elif Side==4:
+        if (Enemy[Py-1][Px]!=0 & Py-1!=0): 
+            Side = 0
+            PlayerTurnDamaged(PDx,PDy)
+        Py-=1 
+        print("СТРЕЛЯЮ ПО ТОЧКЕ {0},{1}".format(Px,Py))
+        print("m - промах, d - ранил, k - убил")
+        Action = input("Жду дальнейших указаний: ")
+        if Action == "m":
+            if i>1:
+                i=0
+                Side=2
+            else:
+                i=0
+                Side=0
+            Enemy[Py][Px]=1
+            PrintField()
+        elif Action == "k":
+            Side=0
+            Enemy[Py][Px]=3
+            Enemy[Py-1][Px-1] = 1
+            Enemy[Py-1][Px+1] = 1
+            Enemy[Py+1][Px+1] = 1
+            Enemy[Py+1][Px-1] = 1
+            Enemy[Py-1][Px] = 1
+            if Enemy[PDy+1][PDx]==0: Enemy[PDy+1][PDx]=1
+            PDx=0
+            PDy=0
+            i=0
+            PrintField()
+            PlayerTurn()
+        elif Action == "d":
+            Enemy[Py][Px] = 3
+            Enemy[Py-1][Px-1] = 1
+            Enemy[Py-1][Px+1] = 1
+            Enemy[Py+1][Px+1] = 1
+            Enemy[Py+1][Px-1] = 1
+            if Py-1==0:
+                i=0
+                Side=2
+                PlayerTurnDamaged(PDx,PDy)
+            else: PlayerTurnDamaged(Px,Py)
+        elif Action == "F":
+            for i in range (1,21): 
+                for j in range (1,21):
+                    if Player[i][j]==2:
+                        Player[i][j]=3
+            PrintField()
+            print("PAYING RESPECT")
+            exit() 
+        elif Action == "FUCK THIS FAG":
+            for i in range (1,21): 
+                for j in range (1,21):
+                    Enemy[i][j]=3
+            PrintField()
+            exit()         
+            
 def PlayerTurn ():
     #Px = int(input("Введите первую координату: "))
     #Py = int(input("Введите вторую координату: "))
@@ -77,7 +307,7 @@ def PlayerTurn ():
     Py = random.randint(1,20)
     if Enemy[Py][Px] != 0:
         PlayerTurn()
-    print("СТРЕЛЯЮ ПО ТОЧКЕ {0},{1}".format(Py,Px))
+    print("СТРЕЛЯЮ ПО ТОЧКЕ {0},{1}".format(Px,Py))
     print("m - промах, d - ранил, k - убил")
     Action = input("Жду дальнейших указаний: ")
     if Action == "m":
@@ -85,6 +315,10 @@ def PlayerTurn ():
         PrintField()
     elif Action == "d":
         Enemy[Py][Px] = 3
+        Enemy[Py-1][Px-1] = 1
+        Enemy[Py-1][Px+1] = 1
+        Enemy[Py+1][Px+1] = 1
+        Enemy[Py+1][Px-1] = 1
         PlayerTurnDamaged(Px,Py)
     elif Action == "k":
         Enemy[Py][Px] = 3
@@ -97,7 +331,8 @@ def PlayerTurn ():
         Enemy[Py+1][Px-1] = 1
         Enemy[Py][Px-1] = 1
         PrintField()
-    elif Action == "f":
+        PlayerTurn()
+    elif Action == "F":
         for i in range (1,21): 
             for j in range (1,21):
                 if Player[i][j]==2:
@@ -120,4 +355,11 @@ Player = TestMap
 PrintField()
 #EnemyTurn()
 while (1==1):
-    PlayerTurn()
+    if (PDx==0 & PDy==0): 
+        PlayerTurn()
+    else: PlayerTurnDamaged(PDx,PDy)
+    
+#Дописать: карты, выбор карты, выбор первенства, эндгейм
+#Тестировать и править баги
+#Если будет время:
+#Присобачить графику, усовершенствовать алгоритм, мелкие фичи just for lulz
