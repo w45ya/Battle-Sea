@@ -1,4 +1,4 @@
-#Морской Бой v1.1.1
+#Морской Бой v1.2.0
 import os
 import random
 import time
@@ -30,7 +30,7 @@ def PrintField ():
     print(colored("              ,:',:`,:',:'          ",'white','on_blue',attrs=['bold'])+colored(" /  ___|             | ___ \       | |  | |  | |                                                 ",'red','on_blue',attrs=['bold']))
     print(colored("           __||_||_||_||__          ",'red','on_blue')+colored(" \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___                                            ",'red','on_blue',attrs=['bold']))
     print(colored("      ____[\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"]____     ",'red','on_blue',attrs=['bold'])+colored("  `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\                                           ",'red','on_blue',attrs=['bold']))
-    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.1.1                                  ",'green','on_blue',attrs=['bold']))
+    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.2.0                                  ",'green','on_blue',attrs=['bold']))
     print(colored("    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^  ",'blue','on_blue',attrs=['bold'])+colored(" \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___| ",'red','on_blue',attrs=['bold'])+colored("  it just works!                          ",'green','on_blue',attrs=['bold']))
     print("-------------------------------------------------------------------------------------------------------------------------------------")
     print()
@@ -628,6 +628,25 @@ def PlayerTurn ():
         PrintField()
         print("Выбрана тактика №3")
         PlayerTurn()
+    elif Action == "DEVELOPERMODE":
+        Command = input("Enter cheat code: ")
+        Ex = 0
+        Ey = 0
+        try:
+            for i in range(len(Letters)): 
+                if (Command[1]==Letters[i]): Ex = i
+            Ey = int(Command[2]+Command[3])
+            print(Ey,Ex)
+            if Command[0]=='P':
+                Player[Ey][Ex]=int(Command[4])
+            elif Command[0]=='E':
+                Enemy[Ey][Ex]=int(Command[4])
+            PrintField()
+            PlayerTurn()
+        except:
+            print("Wrong command")
+            PlayerTurn()
+
     elif Action == "F":
         for i in range (1,21): 
             for j in range (1,21):
