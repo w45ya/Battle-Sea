@@ -1,4 +1,4 @@
-#Морской Бой v1.2.0
+#Морской Бой v1.3.0
 import os
 import random
 import time
@@ -17,11 +17,19 @@ Side = 0
 i = 0
 PlayerCount = 77
 EnemyCount = 77
-Letters = "ЁАБВГДЕЖЗИКЛМНОПРСТУФЙ"
 Sides=[0,0,0,0,0]
 SaveX = 0
 SaveY = 0
 SaveS = 0
+Letters = ""
+
+LangChoose = int(input("Выберите Язык (RU - 1; ENG - 2): "))
+if LangChoose == 1:
+    Letters = "ЁАБВГДЕЖЗИКЛМНОПРСТУФЙ"
+elif LangChoose == 2:
+    Letters = "ЁABCDEFGHIJKLMNOPQRSTЙ"
+else:
+    exit()
 
 def PrintField (): 
     os.system('clear')
@@ -30,13 +38,17 @@ def PrintField ():
     print(colored("              ,:',:`,:',:'          ",'white','on_blue',attrs=['bold'])+colored(" /  ___|             | ___ \       | |  | |  | |                                                 ",'red','on_blue',attrs=['bold']))
     print(colored("           __||_||_||_||__          ",'red','on_blue')+colored(" \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___                                            ",'red','on_blue',attrs=['bold']))
     print(colored("      ____[\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"]____     ",'red','on_blue',attrs=['bold'])+colored("  `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\                                           ",'red','on_blue',attrs=['bold']))
-    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.2.0                                  ",'green','on_blue',attrs=['bold']))
+    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.3.0                                  ",'green','on_blue',attrs=['bold']))
     print(colored("    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^  ",'blue','on_blue',attrs=['bold'])+colored(" \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___| ",'red','on_blue',attrs=['bold'])+colored("  it just works!                          ",'green','on_blue',attrs=['bold']))
     print("-------------------------------------------------------------------------------------------------------------------------------------")
     print()
     print("--|-----------------------------","{:02d}".format(76-PlayerCount),"---------------------------  ||  --|-----------------------------","{:02d}".format(76-EnemyCount),"----------------------------")
     print("--|------------------------------------------------------------  ||  --|-------------------------------------------------------------")
-    print("  |  А  Б  В  Г  Д  Е  Ж  З  И  К  Л  М  Н  О  П  Р  С  Т  У  Ф  ||    |  А  Б  В  Г  Д  Е  Ж  З  И  К  Л  М  Н  О  П  Р  С  Т  У  Ф ")
+    if LangChoose == 1:
+        print("  |  А  Б  В  Г  Д  Е  Ж  З  И  К  Л  М  Н  О  П  Р  С  Т  У  Ф  ||    |  А  Б  В  Г  Д  Е  Ж  З  И  К  Л  М  Н  О  П  Р  С  Т  У  Ф ")
+    if LangChoose == 2:
+        print("  |  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T  ||    |  A  B  C  D  E  F  G  H  I  J  K  L  M  N  O  P  Q  R  S  T ")
+    
     print("--|------------------------------------------------------------  ||  --|-------------------------------------------------------------")
     for i in range (1,21): 
         print("{:02d}".format(i),end="")
@@ -148,7 +160,41 @@ def EnemyTurn ():
         except:
             print("Неверная координата")
             EnemyTurn()
-
+            
+def DeveloperMode ():
+    global LangChoose
+    while True:
+        Command = input("Enter cheat code: ")
+        Ex = 0
+        Ey = 0
+        if Command == "EXIT":
+            PrintField()
+            break
+        if Command == "LangRU":
+            LangChoose = 1
+            PrintField()
+            break
+        if Command == "LangENG":
+            LangChoose = 2
+            PrintField()
+            break
+        try:
+            for i in range(len(Letters)): 
+                if (Command[1]==Letters[i]): Ex = i
+            Ey = int(Command[2]+Command[3])
+            if Command[0]=='P' or Command[0]=='И':
+                Player[Ey][Ex]=int(Command[4])
+            elif Command[0]=='E' or Command[0]=='П':
+                Enemy[Ey][Ex]=int(Command[4])
+            else:
+                print("Wrong command")
+                PlayerTurn()
+            PrintField()
+        except:
+            print("Wrong command")
+            PlayerTurn()
+    PlayerTurn()
+        
 def PlayerTurnDamaged (Px,Py):
     PrintField()
     global PDx, PDy, Side, i, PlayerCount, EnemyCount, Sides, SaveX, SaveY, SaveS
@@ -182,7 +228,7 @@ def PlayerTurnDamaged (Px,Py):
             print("СТРЕЛЯЮ ПО ТОЧКЕ {0}{1}".format(Letters[Px],Py))
             print("М - мимо, Р - ранил, У - убил")
             Action = input("Жду дальнейших указаний: ")
-            if Action == "М":
+            if Action == "М" or Action == "M":
                 if i>1:
                     i=0
                     Sides[Side]=0
@@ -194,7 +240,7 @@ def PlayerTurnDamaged (Px,Py):
                 Enemy[Py][Px]=1
                 PrintField()
                 return
-            elif Action == "У":
+            elif Action == "У" or Action == "K":
                 Side=0
                 Sides=[0,0,0,0,0]
                 Enemy[Py][Px]=3
@@ -210,7 +256,7 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount-=1
                 PrintField()
                 PlayerTurn()
-            elif Action == "Р":
+            elif Action == "Р" or Action == "D":
                 Enemy[Py][Px] = 3
                 Enemy[Py-1][Px-1] = 1
                 Enemy[Py-1][Px+1] = 1
@@ -271,9 +317,12 @@ def PlayerTurnDamaged (Px,Py):
         else:
             Py+=1 
             print("СТРЕЛЯЮ ПО ТОЧКЕ {0}{1}".format(Letters[Px],Py))
-            print("М - мимо, Р - ранил, У - убил")
+            if LangChoose == 1:
+                print("М - мимо, Р - ранил, У - убил")
+            if LangChoose == 2:
+                print("M - мимо, D - ранил, K - убил")
             Action = input("Жду дальнейших указаний: ")
-            if Action == "М":
+            if Action == "М" or Action == "M":
                 if i>1:
                     i=0
                     Sides[Side]=0
@@ -285,7 +334,7 @@ def PlayerTurnDamaged (Px,Py):
                 Enemy[Py][Px]=1
                 PrintField()
                 return
-            elif Action == "У":
+            elif Action == "У" or Action == "K":
                 Sides=[0,0,0,0,0]
                 Side=0
                 Enemy[Py][Px]=3
@@ -301,7 +350,7 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount-=1
                 PrintField()
                 PlayerTurn()
-            elif Action == "Р":
+            elif Action == "Р" or Action == "D":
                 Enemy[Py][Px] = 3
                 Enemy[Py-1][Px-1] = 1
                 Enemy[Py-1][Px+1] = 1
@@ -363,7 +412,7 @@ def PlayerTurnDamaged (Px,Py):
             print("СТРЕЛЯЮ ПО ТОЧКЕ {0}{1}".format(Letters[Px],Py))
             print("М - мимо, Р - ранил, У - убил")
             Action = input("Жду дальнейших указаний: ")
-            if Action == "М":
+            if Action == "М" or Action == "M":
                 if i>1:
                     i=0
                     Sides[Side]=0
@@ -375,7 +424,7 @@ def PlayerTurnDamaged (Px,Py):
                 Enemy[Py][Px]=1
                 PrintField()
                 return
-            elif Action == "У":
+            elif Action == "У" or Action == "K":
                 Sides=[0,0,0,0,0]
                 Side=0
                 Enemy[Py][Px]=3
@@ -391,7 +440,7 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount-=1
                 PrintField()
                 PlayerTurn()
-            elif Action == "Р":
+            elif Action == "Р" or Action == "D":
                 Enemy[Py][Px] = 3
                 Enemy[Py-1][Px-1] = 1
                 Enemy[Py-1][Px+1] = 1
@@ -453,7 +502,7 @@ def PlayerTurnDamaged (Px,Py):
             print("СТРЕЛЯЮ ПО ТОЧКЕ {0}{1}".format(Letters[Px],Py))
             print("М - мимо, Р - ранил, У - убил")
             Action = input("Жду дальнейших указаний: ")
-            if Action == "М":
+            if Action == "М" or Action == "M":
                 if i>1:
                     i=0
                     Sides[Side]=0
@@ -465,7 +514,7 @@ def PlayerTurnDamaged (Px,Py):
                 Enemy[Py][Px]=1
                 PrintField()
                 return
-            elif Action == "У":
+            elif Action == "У" or Action == "K":
                 Sides=[0,0,0,0,0]
                 Side=0
                 Enemy[Py][Px]=3
@@ -481,7 +530,7 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount-=1
                 PrintField()
                 PlayerTurn()
-            elif Action == "Р":
+            elif Action == "Р" or Action == "D":
                 Enemy[Py][Px] = 3
                 Enemy[Py-1][Px-1] = 1
                 Enemy[Py-1][Px+1] = 1
@@ -588,11 +637,11 @@ def PlayerTurn ():
     print("СТРЕЛЯЮ ПО ТОЧКЕ {0}{1}".format(Letters[Px],Py))
     print("М - мимо Р - ранил, У - убил")
     Action = input("Жду дальнейших указаний: ")
-    if Action == "М":
+    if Action == "М" or Action == "M":
         Enemy[Py][Px] = 1
         PrintField()
         return
-    elif Action == "Р":
+    elif Action == "Р" or Action == "D":
         Enemy[Py][Px] = 3
         Enemy[Py-1][Px-1] = 1
         Enemy[Py-1][Px+1] = 1
@@ -600,7 +649,7 @@ def PlayerTurn ():
         Enemy[Py+1][Px-1] = 1
         EnemyCount-=1
         PlayerTurnDamaged(Px,Py)
-    elif Action == "У":
+    elif Action == "У" or Action == "K":
         Enemy[Py][Px] = 3
         Enemy[Py-1][Px-1] = 1
         Enemy[Py-1][Px] = 1
@@ -629,24 +678,8 @@ def PlayerTurn ():
         print("Выбрана тактика №3")
         PlayerTurn()
     elif Action == "DEVELOPERMODE":
-        Command = input("Enter cheat code: ")
-        Ex = 0
-        Ey = 0
-        try:
-            for i in range(len(Letters)): 
-                if (Command[1]==Letters[i]): Ex = i
-            Ey = int(Command[2]+Command[3])
-            print(Ey,Ex)
-            if Command[0]=='P':
-                Player[Ey][Ex]=int(Command[4])
-            elif Command[0]=='E':
-                Enemy[Ey][Ex]=int(Command[4])
-            PrintField()
-            PlayerTurn()
-        except:
-            print("Wrong command")
-            PlayerTurn()
-
+        DeveloperMode()
+        
     elif Action == "F":
         for i in range (1,21): 
             for j in range (1,21):
@@ -787,4 +820,4 @@ while PlayerCount > 0 and EnemyCount > 0:
         Turn = 1
     else:
         exit()
-#Осталось: Тестировать и править баги; Если будет время: Тактики, мелкие фичи just for lulz;
+#Осталось: Тестировать и править баги;
