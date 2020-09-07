@@ -1,4 +1,4 @@
-#Морской Бой v0.8.2
+#Морской Бой v0.9
 import os
 import random
 from termcolor import colored
@@ -12,6 +12,7 @@ i = 0
 PlayerCount = 76
 EnemyCount = 76
 Letters = "ЁАБВГДЕЖЗИКЛМНОПРСТУФЙ"
+Sides=[0,0,0,0,0]
 
 def PrintField (): 
     os.system('clear')
@@ -20,7 +21,7 @@ def PrintField ():
     print(colored("              ,:',:`,:',:'          ",'white','on_blue',attrs=['bold'])+colored(" /  ___|             | ___ \       | |  | |  | |                                                 ",'red','on_blue',attrs=['bold']))
     print(colored("           __||_||_||_||__          ",'red','on_blue')+colored(" \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___                                            ",'red','on_blue',attrs=['bold']))
     print(colored("      ____[\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"]____     ",'red','on_blue',attrs=['bold'])+colored("  `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\                                           ",'red','on_blue',attrs=['bold']))
-    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  indev v0.8.2                            ",'green','on_blue',attrs=['bold']))
+    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  indev v0.9.0                            ",'green','on_blue',attrs=['bold']))
     print(colored("    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^  ",'blue','on_blue',attrs=['bold'])+colored(" \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___| ",'red','on_blue',attrs=['bold'])+colored("  it just works!                          ",'green','on_blue',attrs=['bold']))
     print("-------------------------------------------------------------------------------------------------------------------------------------")
     print()
@@ -76,7 +77,7 @@ def EnemyTurn ():
             PrintField()
             print("ПОПАЛ")
             PlayerCount-=1
-            EnemyTurn()
+            if PlayerCount > 0: EnemyTurn()
         else:
             Player[int(Ey)][int(Ex)]=1
             PrintField()
@@ -84,13 +85,19 @@ def EnemyTurn ():
 
 def PlayerTurnDamaged (Px,Py):
     PrintField()
-    global PDx, PDy, Side, i, PlayerCount, EnemyCount
+    global PDx, PDy, Side, i, PlayerCount, EnemyCount, Sides
     if PDx==0: PDx=Px
     if PDy==0: PDy=Py
-    if Side==0: Side=random.randint(1,4)
+    if Side==0: 
+        while True:
+            Side=random.randint(1,4)
+            if Sides[Side]==0:
+                break
     i+=1
     if Side==1:
+        Sides[Side]==1
         if (Enemy[Py][Px+1]!=0 and Px+1==21): 
+            Sides[Side]=0
             Side = 0
             PlayerTurnDamaged(PDx,PDy)
             return
@@ -102,15 +109,18 @@ def PlayerTurnDamaged (Px,Py):
             if Action == "П":
                 if i>1:
                     i=0
+                    Sides[Side]=0
                     Side=3
                 else:
                     i=0
+                    Sides[Side]=1
                     Side=0
                 Enemy[Py][Px]=1
                 PrintField()
                 return
             elif Action == "У":
                 Side=0
+                Sides=[0,0,0,0,0]
                 Enemy[Py][Px]=3
                 Enemy[Py-1][Px-1] = 1
                 Enemy[Py-1][Px+1] = 1
@@ -133,6 +143,7 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount-=1
                 if Px+1==21:
                     i=0
+                    Sides[Side]=0
                     Side=3
                     PlayerTurnDamaged(PDx,PDy)
                 else: PlayerTurnDamaged(Px,Py)
@@ -161,7 +172,9 @@ def PlayerTurnDamaged (Px,Py):
                 PlayerTurnDamaged(Px-1,Py)
             
     elif Side==2:
+        Sides[Side]==1
         if (Enemy[Py+1][Px]!=0 and Py+1==21): 
+            Sides[Side]=0
             Side = 0
             PlayerTurnDamaged(PDx,PDy)
             return
@@ -173,14 +186,17 @@ def PlayerTurnDamaged (Px,Py):
             if Action == "П":
                 if i>1:
                     i=0
+                    Sides[Side]=0
                     Side=4
                 else:
                     i=0
+                    Sides[Side]=1
                     Side=0
                 Enemy[Py][Px]=1
                 PrintField()
                 return
             elif Action == "У":
+                Sides=[0,0,0,0,0]
                 Side=0
                 Enemy[Py][Px]=3
                 Enemy[Py-1][Px-1] = 1
@@ -204,6 +220,7 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount-=1
                 if Py+1==0:
                     i=0
+                    Sides[Side]=0
                     Side=4
                     PlayerTurnDamaged(PDx,PDy)
                 else: PlayerTurnDamaged(Px,Py)
@@ -232,7 +249,9 @@ def PlayerTurnDamaged (Px,Py):
                 PlayerTurnDamaged(Px,Py-1)
                 
     elif Side==3:
+        Sides[Side]==1
         if (Enemy[Py][Px-1]!=0 and Px-1==0): 
+            Sides[Side]=0
             Side = 0
             PlayerTurnDamaged(PDx,PDy)
             return
@@ -244,14 +263,17 @@ def PlayerTurnDamaged (Px,Py):
             if Action == "П":
                 if i>1:
                     i=0
+                    Sides[Side]=0
                     Side=1
                 else:
                     i=0
+                    Sides[Side]=1
                     Side=0
                 Enemy[Py][Px]=1
                 PrintField()
                 return
             elif Action == "У":
+                Sides=[0,0,0,0,0]
                 Side=0
                 Enemy[Py][Px]=3
                 Enemy[Py-1][Px-1] = 1
@@ -275,6 +297,7 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount-=1
                 if Px-1==0:
                     i=0
+                    Sides[Side]=0
                     Side=1
                     PlayerTurnDamaged(PDx,PDy)
                 else: PlayerTurnDamaged(Px,Py)
@@ -303,7 +326,9 @@ def PlayerTurnDamaged (Px,Py):
                 PlayerTurnDamaged(Px+1,Py)
                 
     elif Side==4:
-        if (Enemy[Py-1][Px]!=0 and Py-1==0): 
+        Sides[Side]==1
+        if (Enemy[Py-1][Px]!=0 and Py-1==0):
+            Sides[Side]=0
             Side = 0
             PlayerTurnDamaged(PDx,PDy)
             return
@@ -315,14 +340,17 @@ def PlayerTurnDamaged (Px,Py):
             if Action == "П":
                 if i>1:
                     i=0
+                    Sides[Side]=0
                     Side=2
                 else:
                     i=0
+                    Sides[Side]=1
                     Side=0
                 Enemy[Py][Px]=1
                 PrintField()
                 return
             elif Action == "У":
+                Sides=[0,0,0,0,0]
                 Side=0
                 Enemy[Py][Px]=3
                 Enemy[Py-1][Px-1] = 1
@@ -346,6 +374,7 @@ def PlayerTurnDamaged (Px,Py):
                 EnemyCount-=1
                 if Py-1==0:
                     i=0
+                    Sides[Side]=0
                     Side=2
                     PlayerTurnDamaged(PDx,PDy)
                 else: PlayerTurnDamaged(Px,Py)
@@ -376,17 +405,12 @@ def PlayerTurn ():
     global PlayerCount, EnemyCount
     #Px = int(input("Введите первую координату: "))
     #Py = int(input("Введите вторую координату: "))
-    Px = random.randint(1,20)
-    Py = random.randint(1,20)
-    if Enemy[Py][Px] != 0:
-        PlayerTurn()
-        return
-    if Enemy[Py][Px] != 0:
-        PlayerTurn()
-        return
-    if Enemy[Py][Px] != 0:
-        PlayerTurn()
-        return
+    while True:
+        Px = random.randint(1,20)
+        Py = random.randint(1,20)
+        if (Enemy[Py][Px] == 0):
+            break
+        
     print("СТРЕЛЯЮ ПО ТОЧКЕ {0}{1}".format(Letters[Px],Py))
     print("П - промах, Р - ранил, У - убил")
     Action = input("Жду дальнейших указаний: ")
@@ -454,5 +478,5 @@ if PlayerCount == 0:
 if EnemyCount == 0:
     print("ПОБЕДА")
 #Дописать: карты, выбор карты
-#Тестировать и править баги
+#Тестировать и править баги 
 #Если будет время: Присобачить графику, усовершенствовать алгоритм, мелкие фичи just for lulz
