@@ -1,4 +1,4 @@
-#Морской Бой v1.4.0
+#Морской Бой v1.4.1
 import os
 import random
 import time
@@ -112,7 +112,7 @@ def PrintField ():
     print(colored("              ,:',:`,:',:'          ",'white','on_blue',attrs=['bold'])+colored(" /  ___|             | ___ \       | |  | |  | |                                                 ",'red','on_blue',attrs=['bold']))
     print(colored("           __||_||_||_||__          ",'red','on_blue')+colored(" \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___                                            ",'red','on_blue',attrs=['bold']))
     print(colored("      ____[\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"]____     ",'red','on_blue',attrs=['bold'])+colored("  `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\                                           ",'red','on_blue',attrs=['bold']))
-    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.4.0                                  ",'green','on_blue',attrs=['bold']))
+    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.4.1                                  ",'green','on_blue',attrs=['bold']))
     print(colored("    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^  ",'blue','on_blue',attrs=['bold'])+colored(" \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___| ",'red','on_blue',attrs=['bold'])+colored("  it just works!                          ",'green','on_blue',attrs=['bold']))
     print("-------------------------------------------------------------------------------------------------------------------------------------")
     if Language == 1:
@@ -225,7 +225,7 @@ def EnemyTurn ():
             print("Неверная координата")
             
 def DeveloperMode (): 
-    global Language
+    global Language, PlayerCount, EnemyCount
     while True:
         Command = input("Enter cheat code: ").upper()
         Ex = 0
@@ -243,6 +243,16 @@ def DeveloperMode ():
             Suicide()
         elif Command == "KABOOM":
             Kaboom()
+        elif Command == "PLAYERCOUNT":
+            try: 
+                PlayerCount = int(input("Enter PlayerCount: "))
+            except: 
+                print("Wrong number")
+        elif Command == "ENEMYCOUNT":
+            try: 
+                EnemyCount = int(input("Enter EnemyCount: "))
+            except: 
+                print("Wrong number")
         else:
             try:
                 for i in range(len(Letters)): 
@@ -250,8 +260,14 @@ def DeveloperMode ():
                 Ey = int(Command[2]+Command[3])
                 if Command[0]=='P' or Command[0]=='И':
                     Player[Ey][Ex]=int(Command[4])
+                    if int(Command[4]) == 2:
+                        PlayerCount+=1
+                    if int(Command[4]) == 3:
+                        PlayerCount-=1
                 elif Command[0]=='E' or Command[0]=='П':
                     Enemy[Ey][Ex]=int(Command[4])
+                    if int(Command[4]) == 3:
+                        EnemyCount-=1
                 else:
                     print("Wrong command")
             except:
@@ -522,7 +538,7 @@ else:
     
 Turn = int(input("Чей первый ход? (1)-игрок (2)-противник: "))
 PrintField()
-while PlayerCount > 0 and EnemyCount > 0:
+while True:
     if Turn == 1:
         if PlayerCount <= 0:
             print("YOU STINK LOSER")
