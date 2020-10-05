@@ -1,10 +1,11 @@
-#Морской Бой v1.4.1
+#Морской Бой v1.5.0
 import os
 import random
 import time
 from termcolor import colored
 import colorama
 colorama.init() 
+import copy
 if os.name == 'nt':
     os.system('mode con:cols=134 lines=38')
 Map01 = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1], [1,0,0,2,0,2,0,2,0,0,0,2,0,0,2,0,2,0,2,0,0,1], [1,2,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,2,1], [1,0,0,2,0,2,0,0,0,0,0,2,2,0,2,2,0,2,2,0,0,1], [1,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,2,2,0,2,2,0,0,0,0,2,2,0,2,2,0,2,2,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,2,2,2,0,2,2,2,0,0,2,2,2,0,0,2,2,2,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,2,2,2,0,2,2,2,2,0,2,2,2,2,0,2,2,2,2,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1], [1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1], [1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1], [1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1], [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1], [1,0,0,0,0,2,2,2,2,2,0,0,0,2,2,2,2,2,0,0,2,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]
@@ -33,6 +34,51 @@ while 1:
     elif Language == 2:
         Letters = "ЁABCDEFGHIJKLMNOPQRSTЙ"
         break
+
+def RandomMap():
+    MapRand = copy.deepcopy(Enemy)
+    Ships = [6, 5, 5, 4, 4, 4, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    for icount in range(0, len(Ships)):
+        Angle = random.randint(1,2)
+        while 1:
+            SomeBolean = 1
+            RandX = random.randint(0,21)
+            RandY = random.randint(0,21)
+            if MapRand[RandX][RandY]==0 and RandX+Ships[icount]<=22 and RandY+Ships[icount]<=22:
+                if Angle == 1: 
+                    for onemorecount in range (0, Ships[icount]):
+                        if MapRand[RandX+onemorecount][RandY] != 0:
+                            SomeBolean = 0
+                elif Angle == 2: 
+                    for onemorecount in range (0, Ships[icount]):
+                        if MapRand[RandX][RandY+onemorecount] != 0:
+                            SomeBolean = 0
+                if SomeBolean == 1: 
+                    break
+        for onemorecount in range(0,Ships[icount]):
+            MapRand[RandX][RandY] = 2
+            MapRand[RandX-1][RandY-1] = 1
+            MapRand[RandX-1][RandY+1] = 1
+            MapRand[RandX+1][RandY-1] = 1
+            MapRand[RandX+1][RandY+1] = 1
+            if Ships[icount] == 1:
+                MapRand[RandX-1][RandY] = 1
+                MapRand[RandX][RandY+1] = 1
+                MapRand[RandX+1][RandY] = 1
+                MapRand[RandX][RandY-1] = 1
+            if Angle == 1:
+                if onemorecount==0: MapRand[RandX-1][RandY] = 1 
+                RandX +=1
+                if onemorecount==Ships[icount]-1: MapRand[RandX][RandY] = 1
+            elif Angle == 2: 
+                if onemorecount==0: MapRand[RandX][RandY-1] = 1 
+                RandY +=1
+                if onemorecount==Ships[icount]-1: MapRand[RandX][RandY] = 1
+    for icount in range (1,21): 
+        for jcount in range (1,21):
+            if MapRand[icount][jcount]==1:
+                MapRand[icount][jcount]=0
+    return(MapRand)
         
 def Suicide():
     for i in range (1,21): 
@@ -112,7 +158,7 @@ def PrintField ():
     print(colored("              ,:',:`,:',:'          ",'white','on_blue',attrs=['bold'])+colored(" /  ___|             | ___ \       | |  | |  | |                                                 ",'red','on_blue',attrs=['bold']))
     print(colored("           __||_||_||_||__          ",'red','on_blue')+colored(" \ `--.   ___   __ _ | |_/ /  __ _ | |_ | |_ | |  ___                                            ",'red','on_blue',attrs=['bold']))
     print(colored("      ____[\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"]____     ",'red','on_blue',attrs=['bold'])+colored("  `--. \ / _ \ / _` || ___ \ / _` || __|| __|| | / _ \\                                           ",'red','on_blue',attrs=['bold']))
-    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.4.1                                  ",'green','on_blue',attrs=['bold']))
+    print(colored("      \ \" '''''''''''''''''''' |    ",'red','on_blue',attrs=['bold'])+colored(" /\__/ /|  __/| (_| || |_/ /| (_| || |_ | |_ | ||  __/ ",'red','on_blue',attrs=['bold'])+colored("  v1.5.0                                  ",'green','on_blue',attrs=['bold']))
     print(colored("    ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^  ",'blue','on_blue',attrs=['bold'])+colored(" \____/  \___| \__,_|\____/  \__,_| \__| \__||_| \___| ",'red','on_blue',attrs=['bold'])+colored("  it just works!                          ",'green','on_blue',attrs=['bold']))
     print("-------------------------------------------------------------------------------------------------------------------------------------")
     if Language == 1:
@@ -500,9 +546,9 @@ def PlayerTurn ():
             PrintField()
             print("Неизвестная команда.")
     
-Player = Enemy
+Player = copy.deepcopy(Enemy)
 PrintField()
-MapChoose = int(input("Выберите номер карты (1-7): "))
+MapChoose = int(input("Выберите номер карты (1-6, 7 — рандом): "))
 if MapChoose == 1:
     Player = Map01
     PrintField()
@@ -528,6 +574,10 @@ elif MapChoose == 6:
     PrintField()
     print("Выбрана карта \"Цветение Сакуры\"")
 elif MapChoose == 7:
+    Player = RandomMap()
+    PrintField()
+    print("Выбрана карта \"На всё воля рандома\"")
+elif MapChoose == 8:
     PrintField()
     print("Выбрана карта \"Никто не Пришёл\"")
 else:
